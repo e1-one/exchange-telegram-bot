@@ -20,10 +20,12 @@ def configure_and_start_telegram_dispatcher(config_file):
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B11.get_value_escaped()), get_usd_actual))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B12.get_value_escaped()), get_usd_for_last_week))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B13.get_value_escaped()), get_usd_for_last_2_weeks))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B14.get_value_escaped()), get_usd_for_last_month))
 
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B21.get_value_escaped()), get_eur_actual))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B22.get_value_escaped()), get_eur_for_last_week))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B23.get_value_escaped()), get_eur_for_last_2_weeks))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B24.get_value_escaped()), get_eur_for_last_month))
 
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B31.get_value_escaped()), show_help))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B32.get_value_escaped()), show_link))

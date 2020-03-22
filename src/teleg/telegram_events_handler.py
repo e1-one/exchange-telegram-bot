@@ -19,12 +19,13 @@ class EventHandler:
     def start(self, update, context):
         message = '''
         Я бот який показує історію курсу валют в обмінниках києва.
+        
         Позначення:
-            обм. - Середній курс по обмінниках
-            НБУ - Курс валют по Нац. Банку України
-            G - Графік коливань
-                '▏ ' - мінімум для заданого періоду
-                '▉' - максимум 
+           ┣ обм. - Середній курс по обмінниках
+           ┣ НБУ - Курс валют по Нац. Банку України
+           ┗ G - Графік коливань
+             ┣   '▏ ' - мінімум для заданого періоду
+             ┗   '▉' - максимум для періоду
         '''
 
         custom_keyboard = [
@@ -35,44 +36,30 @@ class EventHandler:
                                  reply_markup=reply_markup)
         self.value_analyzer.add_listener(UpdateListener(context, update.message.chat_id))
 
-    def get_usd(self, update, context):
-        data = get_actual_data(SourceType.EXCHANGER, CurrencyType.USD)
-        message = get_html_table_preformated([data])
-        context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)
+    def get_usd_actual(self, update, context):
+        self.get_currency_for_period(update, context, CurrencyType.USD, 0)
 
-    def get_usd_for_last5_days(self, update, context):
-        today = date.today()
-
-        # index_message = f"Nbu rate is: {data.nbu_rate}. Avg rate is: {data.avg_rate}"
-        message = get_html_table_preformated([
-            get_actual_data(SourceType.EXCHANGER, CurrencyType.USD),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=1)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=2)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=3)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=4)),
-        ])
-        context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)
+    def get_usd_for_last_week(self, update, context):
+        self.get_currency_for_period(update, context, CurrencyType.USD, 7)
 
     def get_usd_for_last_2_weeks(self, update, context):
+        self.get_currency_for_period(update, context, CurrencyType.USD, 14)
+
+    def get_eur_actual(self, update, context):
+        self.get_currency_for_period(update, context, CurrencyType.Euro, 0)
+
+    def get_eur_for_last_week(self, update, context):
+        self.get_currency_for_period(update, context, CurrencyType.Euro, 7)
+
+    def get_eur_for_last_2_weeks(self, update, context):
+        self.get_currency_for_period(update, context, CurrencyType.Euro, 14)
+
+    def get_currency_for_period(self, update, context, currency: CurrencyType, period: int):
         today = date.today()
 
-        # index_message = f"Nbu rate is: {data.nbu_rate}. Avg rate is: {data.avg_rate}"
-        message = get_html_table_preformated([
-            get_actual_data(SourceType.EXCHANGER, CurrencyType.USD),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=1)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=2)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=3)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=4)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=5)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=6)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=7)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=8)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=9)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=10)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=11)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=12)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=13)),
-            get_data_for_date_from_cache(SourceType.EXCHANGER, CurrencyType.USD, today - timedelta(days=14)),
+        data = [get_actual_data(SourceType.EXCHANGER, currency)]
+        for i in range(1, period):
+            data.append(get_data_for_date_from_cache(SourceType.EXCHANGER, currency, today - timedelta(days=i)))
 
-        ])
+        message = get_html_table_preformated(data)
         context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)

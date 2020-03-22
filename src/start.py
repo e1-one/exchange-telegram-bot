@@ -19,12 +19,14 @@ def configure_and_start_telegram_dispatcher(config_file, analyzer):
     updater = Updater(token=config_file['token'], use_context=True)
     dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B11.get_value_escaped()), eh.get_usd))
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B12.get_value_escaped()), eh.get_usd_for_last5_days))
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B13.get_value_escaped()), eh.get_usd_for_last_2_weeks))
     dispatcher.add_handler(CommandHandler('start', eh.start))
-    dispatcher.add_handler(CommandHandler('b', eh.get_usd_for_last5_days))
-    dispatcher.add_handler(CommandHandler('c', eh.get_usd_for_last_2_weeks))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B11.get_value_escaped()), eh.get_usd_actual))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B12.get_value_escaped()), eh.get_usd_for_last_week))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B13.get_value_escaped()), eh.get_usd_for_last_2_weeks))
+
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B21.get_value_escaped()), eh.get_eur_actual))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B22.get_value_escaped()), eh.get_eur_for_last_week))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B23.get_value_escaped()), eh.get_eur_for_last_2_weeks))
     logging.info('Starting updates polling')
     updater.start_polling()
 

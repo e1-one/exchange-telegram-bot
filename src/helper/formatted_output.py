@@ -30,7 +30,7 @@ def get_str_table(list_el: List[PageDataObject]):
 
 def date_format(for_date):
     if for_date == date.today():
-        return "Today"
+        return "Сьогодні"
     else:
         return for_date.strftime('%d/%m')
 

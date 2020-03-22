@@ -37,7 +37,13 @@ def date_format(for_date):
 
 if __name__ == '__main__':
     fout = get_str_table([
-        PageDataObject(1.5, 1.8, date.today()),
-        PageDataObject(1.1, 1.5, date(2000, 12, 28)),
-        PageDataObject(1.11, 2.0, date(2002, 11, 28))])
+        PageDataObject(1.1, 100, date(2000, 12, 1)),
+        PageDataObject(1.2, 1, date(2000, 12, 2)),
+        PageDataObject(1.3, 1, date(2000, 12, 3)),
+        PageDataObject(1.4, 1, date(2000, 12, 4)),
+        PageDataObject(1.5, 1, date(2000, 12, 5)),
+        PageDataObject(1.6, 1, date(2000, 12, 6)),
+        PageDataObject(1.7, 1, date(2000, 12, 7)),
+
+    ])
     print(fout)

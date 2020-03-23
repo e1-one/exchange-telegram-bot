@@ -9,6 +9,8 @@ from model.PageDataObject import PageDataObject
 from model.SourceType import SourceType
 from teleg.bot_constants import BotButton
 
+import logging
+
 index_message = '''
 Курс валют в обмінниках України 🇺🇦
 '''
@@ -33,6 +35,7 @@ def start(update, context):
         [BotButton.B31.value, BotButton.B32.value],
     ]
     reply_markup = ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False, selective=True)
+    logging.info(f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name} called /start command")
     context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=index_message,
                              reply_markup=reply_markup)
 
@@ -86,6 +89,7 @@ def get_currency_for_period(update, context, currency: CurrencyType, period: int
 
     message = get_html_table_preformated(data)
     context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)
+    logging.info(f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name}: received response with currency table")
 
 
 def test_output(update, context):

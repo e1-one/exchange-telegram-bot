@@ -24,7 +24,8 @@ def get_str_table(list_el: List[PageDataObject]):
     table = []
     for el in list_el:
         table.append([date_format(el.date_obj), el.avg_rate, vtg_avg.get(el.avg_rate), el.nbu_rate, vtg_nbu.get(el.nbu_rate)])
-    tabular_output = tabulate(table, headers=["Дата", "обм.", "G", "НБУ", "G"], tablefmt="simple")
+    tabular_output = tabulate(table, headers=["Дата", "обм.", "√", "НБУ", "√"], tablefmt="simple")
+
     return tabular_output
 
 

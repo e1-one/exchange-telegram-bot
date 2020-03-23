@@ -1,8 +1,10 @@
+import logging
+logging.getLogger().setLevel(logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
 from telegram.ext import MessageHandler, RegexHandler, Filters
 
 from teleg.telegram_events_handler import *
-import logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
 def read_config_file():
@@ -31,12 +33,12 @@ def configure_and_start_telegram_dispatcher(config_file):
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B32.get_value_escaped()), show_link))
 
     dispatcher.add_handler(CommandHandler("test", test_output))
-    logging.info('Starting updates polling')
+    logging.debug('Starting updates polling')
     updater.start_polling()
 
 
 if __name__ == '__main__':
-
     config = read_config_file()
     configure_and_start_telegram_dispatcher(config)
+
     logging.info("Started.")

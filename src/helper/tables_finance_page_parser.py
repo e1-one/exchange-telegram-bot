@@ -14,9 +14,19 @@ def get_data_from_html_page(source_type: SourceType, currency_type: CurrencyType
     url = f"https://tables.finance.ua/ua/currency/cash/-/ua/{currency_type.value}/{source_type.value}/{for_date.year}/{for_date.month}/{for_date.day}"
     page = requests.get(url)
     tree = html.fromstring(page.content)
-    avg_rate_value = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[2]/td[2]/*')[0].text
-    avg_nbu_value = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[3]/td/text()')[0]
-    return PageDataObject(avg_rate_value, avg_nbu_value, for_date)
+    # todo: do something with this. maybe it is better to take values from the previous day?
+    avg_rate_value_sell = 0
+    nbu_value_sell = 0
+    try:
+        avg_rate_value_sell = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[2]/td[2]/*')[0].text
+    except:
+        logging.warning("An exception occurred during avg_rate value parsing")
+    try:
+        nbu_value_sell = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[3]/td/text()')[0]
+    except:
+        logging.warning("An exception occurred during nbu value parsing")
+
+    return PageDataObject(avg_rate_value_sell, nbu_value_sell, for_date)
 
 
 class LatestDataContainer:

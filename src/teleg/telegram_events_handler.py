@@ -14,9 +14,10 @@ index_message = '''
 '''
 help_message = '''
 Позначення:
-┣ обм. - Середній курс по обмінниках
-┣ НБУ - Курс валют по Нац. Банку України
-┗  √- Графічне відображення коливань
+┣ купів. - середній курс купівлі валюти по обмінниках
+┣ продаж - середній курс продажі валюти по обмінниках
+┣ НБУ - Курс валют по Національному Банку України
+┗  √- колонка відображення коливань курсу, де:
   ┣   '▏ ' - мінімум для заданого періоду
   ┗   '▉' - максимум для періоду
 '''
@@ -89,61 +90,19 @@ def get_currency_for_period(update, context, currency: CurrencyType, period: int
 
 def test_output(update, context):
     data = [
-        PageDataObject(1.0, 1, date(2000, 12, 1)),
-        PageDataObject(1.2, 1, date(2000, 12, 2)),
-        PageDataObject(1.3, 1, date(2000, 12, 3)),
-        PageDataObject(1.4, 1, date(2000, 12, 4)),
-        PageDataObject(1.5, 1, date(2000, 12, 5)),
-        PageDataObject(1.6, 1, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 2, date(2000, 12, 1)),
-        PageDataObject(1.2, 2, date(2000, 12, 2)),
-        PageDataObject(1.3, 2, date(2000, 12, 3)),
-        PageDataObject(1.4, 2, date(2000, 12, 4)),
-        PageDataObject(1.5, 2, date(2000, 12, 5)),
-        PageDataObject(1.6, 2, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 3, date(2000, 12, 1)),
-        PageDataObject(1.2, 3, date(2000, 12, 2)),
-        PageDataObject(1.3, 3, date(2000, 12, 3)),
-        PageDataObject(1.4, 3, date(2000, 12, 4)),
-        PageDataObject(1.5, 3, date(2000, 12, 5)),
-        PageDataObject(1.6, 3, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 4, date(2000, 12, 1)),
-        PageDataObject(1.2, 4, date(2000, 12, 2)),
-        PageDataObject(1.3, 4, date(2000, 12, 3)),
-        PageDataObject(1.4, 4, date(2000, 12, 4)),
-        PageDataObject(1.5, 4, date(2000, 12, 5)),
-        PageDataObject(1.6, 4, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 5, date(2000, 12, 1)),
-        PageDataObject(1.2, 5, date(2000, 12, 2)),
-        PageDataObject(1.3, 5, date(2000, 12, 3)),
-        PageDataObject(1.4, 5, date(2000, 12, 4)),
-        PageDataObject(1.5, 5, date(2000, 12, 5)),
-        PageDataObject(1.6, 5, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 6, date(2000, 12, 1)),
-        PageDataObject(1.2, 6, date(2000, 12, 2)),
-        PageDataObject(1.3, 6, date(2000, 12, 3)),
-        PageDataObject(1.4, 6, date(2000, 12, 4)),
-        PageDataObject(1.5, 6, date(2000, 12, 5)),
-        PageDataObject(1.6, 6, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 7, date(2000, 12, 1)),
-        PageDataObject(1.2, 7, date(2000, 12, 2)),
-        PageDataObject(1.3, 7, date(2000, 12, 3)),
-        PageDataObject(1.4, 7, date(2000, 12, 4)),
-        PageDataObject(1.5, 7, date(2000, 12, 5)),
-        PageDataObject(1.6, 7, date(2000, 12, 6)),
-
-        PageDataObject(1.0, 8, date(2000, 12, 1)),
-        PageDataObject(1.2, 8, date(2000, 12, 2)),
-        PageDataObject(1.3, 8, date(2000, 12, 3)),
-        PageDataObject(1.4, 8, date(2000, 12, 4)),
-        PageDataObject(1.5, 8, date(2000, 12, 5)),
-        PageDataObject(1.6, 8, date(2000, 12, 6)),
+        PageDataObject(10.10, 11.11, 10.22, date.today()),
+        PageDataObject(10.12, 11.12, 10.32, date(2000, 12, 2)),
+        PageDataObject(10.13, 11.16, 10.34, date(2000, 12, 3)),
+        PageDataObject(10.14, 11.1, 10.12, date(2000, 12, 4)),
+        PageDataObject(10.15, 11.2, 10.24, date(2000, 12, 5)),
+        PageDataObject(10.16, 11.17, 10.32, date(2000, 12, 6)),
+        PageDataObject(10.10, 11.1, 10.42, date(2000, 12, 1)),
+        PageDataObject(10.12, 11.6, 10.32, date(2000, 12, 2)),
+        PageDataObject(10.13, 11.4, 10.32, date(2000, 12, 3)),
+        PageDataObject(10.14, 11.3, 10.31, date(2000, 12, 4)),
+        PageDataObject(10.15, 11.3, 10.32, date(2000, 12, 5)),
+        PageDataObject(10.16, 11.2, 10.37, date(2000, 12, 6)),
+        PageDataObject(10.10, 11.1, 10.32, date(2000, 12, 1)),
     ]
     message = get_html_table_preformated(data)
     context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)

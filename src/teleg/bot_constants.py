@@ -14,10 +14,11 @@ class BotButton(Enum):
     B24 = '€ за місяць'
 
     B31 = '❓ допомога'
-    B32 = 'ℹ посилання на сайт'
+    B32 = 'ℹ посилання на finance.ua, bank.gov.ua'
 
     def get_value_escaped(self):
         return re.escape(self.value)
+
 
 if __name__ == '__main__':
     print(BotButton.B11.get_value_escaped())

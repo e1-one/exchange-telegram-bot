@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List
 
-from helper.VTG import VTG
+from helper.values_to_graph_block_translator import ValuesToGraphBlockTranslator
 from model.PageDataObject import PageDataObject
 
 
@@ -18,9 +18,9 @@ def get_str_table(list_el: List[PageDataObject]):
         list_avg_buy.append(e.avg_buy_rate)
         list_nbu.append(e.nbu_sell_rate)
 
-    vtg_avg_sell = VTG(list_avg_sell)
-    vtg_avg_buy = VTG(list_avg_buy)
-    vtg_nbu = VTG(list_nbu)
+    vtg_avg_sell = ValuesToGraphBlockTranslator(list_avg_sell)
+    vtg_avg_buy = ValuesToGraphBlockTranslator(list_avg_buy)
+    vtg_nbu = ValuesToGraphBlockTranslator(list_nbu)
     # qwertyuiopasdfghjklzxcvbnm1234567890q
     l1 = "Дата   купів. √  продаж √   НБУ  √\n"
     l2 = "-----  ------ -  ------ -  ----- -\n"

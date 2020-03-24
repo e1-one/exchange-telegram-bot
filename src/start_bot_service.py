@@ -2,19 +2,18 @@ import logging
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-from telegram.ext import MessageHandler, RegexHandler, Filters
+from telegram.ext import MessageHandler, Filters, CommandHandler, Updater
 
-from teleg.telegram_events_handler import *
+from teleg.telegram_events_handlers import *
 
 
 def read_config_file():
-    with open('config.json', 'r') as f:
+    with open('./config.json', 'r') as f:
         import json
         return json.load(f)
 
 
 def configure_and_start_telegram_dispatcher(config_file):
-    from telegram.ext import CommandHandler, Updater
     updater = Updater(token=config_file['token'], use_context=True)
     dispatcher = updater.dispatcher
 
@@ -32,8 +31,9 @@ def configure_and_start_telegram_dispatcher(config_file):
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B31.get_value_escaped()), show_help))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B32.get_value_escaped()), show_link))
 
-    dispatcher.add_handler(CommandHandler("test", test_output))
-    logging.debug('Starting updates polling')
+    dispatcher.add_handler(CommandHandler("test", send_test_output_to_bot))
+
+    logging.debug('Updates polling was configured')
     updater.start_polling()
 
 
@@ -41,4 +41,4 @@ if __name__ == '__main__':
     config = read_config_file()
     configure_and_start_telegram_dispatcher(config)
 
-    logging.info("Started.")
+    logging.info("bot is started.")

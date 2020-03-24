@@ -1,6 +1,7 @@
 from datetime import timedelta, date
 
 from telegram import ReplyKeyboardMarkup, ParseMode
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from helper.formatted_output import get_html_table_preformated
 from helper.tables_finance_page_parser import get_actual_data, get_data_for_date_from_cache
@@ -113,3 +114,27 @@ def send_test_output_to_bot(update, context):
     ]
     message = get_html_table_preformated(data)
     context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)
+
+
+def configure_updater(token_value):
+    updater = Updater(token=token_value, use_context=True)
+    dispatcher = updater.dispatcher
+
+    dispatcher.add_handler(CommandHandler('start', start))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B11.get_value_escaped()), get_usd_actual))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B12.get_value_escaped()), get_usd_for_last_week))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B13.get_value_escaped()), get_usd_for_last_2_weeks))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B14.get_value_escaped()), get_usd_for_last_month))
+
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B21.get_value_escaped()), get_eur_actual))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B22.get_value_escaped()), get_eur_for_last_week))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B23.get_value_escaped()), get_eur_for_last_2_weeks))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B24.get_value_escaped()), get_eur_for_last_month))
+
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B31.get_value_escaped()), show_help))
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B32.get_value_escaped()), show_link))
+
+    dispatcher.add_handler(CommandHandler("test", send_test_output_to_bot))
+
+    logging.debug('Updates polling was configured')
+    updater.start_polling()

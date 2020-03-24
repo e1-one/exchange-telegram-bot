@@ -13,6 +13,9 @@ import logging
 
 index_message = '''
 Курс валют в обмінниках України 🇺🇦
+
+Натисніть кнопку на клавіатурі, щоб отримати звіт.
+Якщо у вас таблиця відображається некоректено - поміняйте орієнтацію екрана з портретної на альбомну (переверніть смарфон) 
 '''
 help_message = '''
 Позначення:
@@ -24,14 +27,14 @@ help_message = '''
   ┗   '▉' - максимум для періоду
 '''
 link = '''
+https://bank.gov.ua/markets
 https://tables.finance.ua/ua/currency/cash/-/ua,0,7oiylpmiow8iy1smadi/usd/2#3:0
 '''
-
 
 def start(update, context):
     custom_keyboard = [
         [BotButton.B11.value, BotButton.B12.value, BotButton.B13.value, BotButton.B14.value],
-        [BotButton.B21.value, BotButton.B22.value, BotButton.B23.value, BotButton.B14.value],
+        [BotButton.B21.value, BotButton.B22.value, BotButton.B23.value, BotButton.B24.value],
         [BotButton.B31.value, BotButton.B32.value],
     ]
     reply_markup = ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False, selective=True)
@@ -92,7 +95,7 @@ def get_currency_for_period(update, context, currency: CurrencyType, period: int
     logging.info(f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name}: received response with currency table")
 
 
-def test_output(update, context):
+def send_test_output_to_bot(update, context):
     data = [
         PageDataObject(10.10, 11.11, 10.22, date.today()),
         PageDataObject(10.12, 11.12, 10.32, date(2000, 12, 2)),

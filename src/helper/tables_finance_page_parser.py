@@ -6,9 +6,9 @@ from lxml import html
 from datetime import date
 import requests
 
-from model.CurrencyType import CurrencyType
-from model.PageDataObject import PageDataObject
-from model.SourceType import SourceType
+from model.currency_type import CurrencyType
+from model.page_data_object import PageDataObject
+from model.source_type import SourceType
 
 
 def get_data_from_html_page(source_type: SourceType, currency_type: CurrencyType, for_date: date):

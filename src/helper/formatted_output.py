@@ -2,7 +2,7 @@ from datetime import date
 from typing import List
 
 from helper.values_to_graph_block_translator import ValuesToGraphBlockTranslator
-from model.PageDataObject import PageDataObject
+from model.page_data_object import PageDataObject
 
 
 def get_html_table_preformated(list_el: List[PageDataObject]):

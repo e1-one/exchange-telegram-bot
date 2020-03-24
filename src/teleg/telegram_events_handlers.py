@@ -4,9 +4,9 @@ from telegram import ReplyKeyboardMarkup, ParseMode
 
 from helper.formatted_output import get_html_table_preformated
 from helper.tables_finance_page_parser import get_actual_data, get_data_for_date_from_cache
-from model.CurrencyType import CurrencyType
-from model.PageDataObject import PageDataObject
-from model.SourceType import SourceType
+from model.currency_type import CurrencyType
+from model.page_data_object import PageDataObject
+from model.source_type import SourceType
 from teleg.bot_constants import BotButton
 
 import logging

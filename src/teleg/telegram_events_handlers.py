@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta, date
 
 from telegram import ReplyKeyboardMarkup, ParseMode
@@ -9,8 +10,6 @@ from model.currency_type import CurrencyType
 from model.page_data_object import PageDataObject
 from model.source_type import SourceType
 from teleg.bot_constants import BotButton
-
-import logging
 
 index_message = '''
 Курс валют в обмінниках України 🇺🇦
@@ -32,24 +31,29 @@ https://bank.gov.ua/markets
 https://tables.finance.ua/ua/currency/cash/-/ua,0,7oiylpmiow8iy1smadi/usd/2#3:0
 '''
 
+custom_keyboard = [
+    [BotButton.B12.value, BotButton.B13.value, BotButton.B14.value],
+    [BotButton.B22.value, BotButton.B23.value, BotButton.B24.value],
+    [BotButton.B31.value, BotButton.B32.value],
+]
+reply_keyboard_markup = ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False, selective=True)
+
+
 def start(update, context):
-    custom_keyboard = [
-        [BotButton.B11.value, BotButton.B12.value, BotButton.B13.value, BotButton.B14.value],
-        [BotButton.B21.value, BotButton.B22.value, BotButton.B23.value, BotButton.B24.value],
-        [BotButton.B31.value, BotButton.B32.value],
-    ]
-    reply_markup = ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False, selective=True)
-    logging.info(f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name} called /start command")
+    logging.info(
+        f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name} called /start command")
     context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=index_message,
-                             reply_markup=reply_markup)
+                             reply_markup=reply_keyboard_markup)
 
 
 def show_help(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=help_message)
+    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=help_message,
+                             reply_markup=reply_keyboard_markup)
 
 
 def show_link(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=link)
+    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=link,
+                             reply_markup=reply_keyboard_markup)
 
 
 def get_usd_actual(update, context):
@@ -92,8 +96,10 @@ def get_currency_for_period(update, context, currency: CurrencyType, period: int
         data.append(get_data_for_date_from_cache(SourceType.EXCHANGER, currency, today - timedelta(days=i)))
 
     message = get_html_table_preformated(data)
-    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message)
-    logging.info(f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name}: received response with currency table")
+    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message,
+                             reply_markup=reply_keyboard_markup)
+    logging.info(
+        f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name}: received response with currency table")
 
 
 def send_test_output_to_bot(update, context):

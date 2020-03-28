@@ -2,11 +2,17 @@ from datetime import date
 from typing import List
 
 from helper.values_to_graph_block_translator import ValuesToGraphBlockTranslator
+from model.currency_type import CurrencyType
 from model.page_data_object import PageDataObject
+from model.source_type import SourceType
 
 
-def get_html_table_preformated(list_el: List[PageDataObject]):
-    return f"<pre>{get_str_table(list_el)}</pre>"
+def get_html_table_formatted(source_type: SourceType, currency: CurrencyType, period: int, list_el: List[PageDataObject]):
+    return f"""
+<pre>Курс {currency.get_symbol()} в {source_type.get_cyrylic_name()} за {period} днів
+----------------------------------
+{get_str_table(list_el)}</pre>
+"""
 
 
 def get_str_table(list_el: List[PageDataObject]):

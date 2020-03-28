@@ -38,19 +38,33 @@ class LatestDataContainer:
 
     def self_scheduled_task(self):
         Timer(60 * 15, self.self_scheduled_task).start()
-        self.latest_data_usd = get_data_from_html_page(SourceType.EXCHANGER, CurrencyType.USD, date.today())
-        self.latest_data_eur = get_data_from_html_page(SourceType.EXCHANGER, CurrencyType.Euro, date.today())
-        logging.info(f"self_scheduled_task invoked. Latest data is: $ avg: {self.latest_data_usd.avg_sell_rate} € avg: {self.latest_data_eur.avg_sell_rate}")
+        self.latest_data_exch_usd = get_data_from_html_page(SourceType.EXCHANGER, CurrencyType.USD, date.today())
+        self.latest_data_exch_eur = get_data_from_html_page(SourceType.EXCHANGER, CurrencyType.Euro, date.today())
+        self.latest_data_bank_usd = get_data_from_html_page(SourceType.BANK, CurrencyType.USD, date.today())
+        self.latest_data_bank_eur = get_data_from_html_page(SourceType.BANK, CurrencyType.Euro, date.today())
+        logging.info(f"self_scheduled_task invoked. Latest data is:")
+        logging.info(f"exch $avg: {self.latest_data_exch_usd.avg_sell_rate}, €avg: {self.latest_data_exch_eur.avg_sell_rate}")
+        logging.info(f"bank $avg: {self.latest_data_bank_usd.avg_sell_rate}, €avg: {self.latest_data_bank_eur.avg_sell_rate}")
 
 
 latest = LatestDataContainer()
 
 
 def get_actual_data(source_type: SourceType, currency_type: CurrencyType):
-    if (source_type == SourceType.EXCHANGER) & (currency_type == CurrencyType.USD):
-        return latest.latest_data_usd
-    elif (source_type == SourceType.EXCHANGER) & (currency_type == CurrencyType.Euro):
-        return latest.latest_data_eur
+    if source_type == SourceType.EXCHANGER:
+        if currency_type == CurrencyType.USD:
+            return latest.latest_data_exch_usd
+        elif currency_type == CurrencyType.Euro:
+            return latest.latest_data_exch_eur
+        else:
+            RuntimeError('Have no data for this input')
+    elif source_type == SourceType.BANK:
+        if currency_type == CurrencyType.USD:
+            return latest.latest_data_bank_usd
+        elif currency_type == CurrencyType.Euro:
+            return latest.latest_data_bank_eur
+        else:
+            RuntimeError('Have no data for this input')
     else:
         raise RuntimeError('Have no data for this input')
 

@@ -7,9 +7,9 @@ class SourceType(Enum):
 
     def get_cyrylic_name(self):
         if self == self.EXCHANGER:
-            return "обмінниках"
+            return "🏪 обмінниках"
         elif self == self.BANK:
-            return "банках"
+            return "🏦 банках"
         else:
             return "default"
 

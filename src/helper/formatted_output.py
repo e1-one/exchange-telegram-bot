@@ -27,7 +27,7 @@ def get_str_table(list_el: List[PageDataObject]):
     vtg_avg_sell = ValuesToGraphBlockTranslator(list_avg_sell)
     vtg_avg_buy = ValuesToGraphBlockTranslator(list_avg_buy)
     vtg_nbu = ValuesToGraphBlockTranslator(list_nbu)
-    # qwertyuiopasdfghjklzxcvbnm1234567890q
+
     l1 = "Дата   купів. √  продаж √   НБУ  √\n"
     l2 = "-----  ------ -  ------ -  ----- -\n"
     message = l1 + l2

@@ -26,12 +26,5 @@ class TestVTG(TestCase):
         vtg = ValuesToGraphBlockTranslator([0, 1, 10, 0])
         self.assertEqual(vtg.get(1), "▏")
         self.assertEqual(vtg.get(10), "▉")
-        self.assertEqual(vtg.get(0), ' ')
-    pass
-
-    def test_list_with_zero(self):
-        vtg = ValuesToGraphBlockTranslator([0, 1, 10, 0])
-        self.assertEqual(vtg.get(1), "▏")
-        self.assertEqual(vtg.get(10), "▉")
-        self.assertEqual(vtg.get(0), ' ')
+        self.assertEqual(vtg.get(0), '▁')
     pass

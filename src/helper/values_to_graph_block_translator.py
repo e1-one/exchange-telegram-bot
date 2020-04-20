@@ -11,12 +11,12 @@ def unique(list1):
 
 class ValuesToGraphBlockTranslator:
     squares = ['▏', '▎', '▍', '▋', '▊', '▉']
-    no_data = ' '
+    no_data = '▁'
 
     def __init__(self, values: list):
         sorted_values = sorted(unique(values))
 
-        self.min = sorted_values[0] if sorted_values[0] is not 0 else sorted_values[1]
+        self.min = sorted_values[0] if sorted_values[0] != 0 else sorted_values[1]
         self.max = sorted_values[len(sorted_values)-1]
 
     def get(self, value: float):

@@ -1,3 +1,4 @@
+import sys
 import logging
 
 # configure logging before other modules are loaded
@@ -14,8 +15,9 @@ def read_config_file():
 
 
 if __name__ == '__main__':
-    config = read_config_file()
-
-    configure_updater(config['token'])
-
+    if len(sys.argv) > 1:
+        bot_token = sys.argv[1]
+    else:
+        bot_token = read_config_file()['token']
+    configure_updater(bot_token)
     logging.info("bot is started.")

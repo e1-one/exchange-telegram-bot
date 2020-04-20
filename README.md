@@ -1,5 +1,5 @@
 # exchange-telegram-bot
 
 ### How to run the bot:
-- set Telegram-bot's token to ./src/config.json
-- execute: $ python3.7 start_bot_service.py
+- set telegram bot token to $BOT_TOKEN
+- execute: $  nohup python3.7 ./exchange-telegram-bot/src/start_bot_service.py $BOT_TOKEN &

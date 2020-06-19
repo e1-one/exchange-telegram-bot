@@ -16,5 +16,5 @@ if [ $? -eq 0 ]; then
   echo "Process is already running."
 else
   echo "Process is not running. Let's start it!"
-  nohup python "$THIS_DIR/src/start_bot_service.py" "$BOT_TOKEN" > bot-nohup.out &
+  nohup python3 "$THIS_DIR/src/start_bot_service.py" "$BOT_TOKEN" > bot-nohup.out &
 fi

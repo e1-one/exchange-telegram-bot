@@ -17,5 +17,7 @@ if [ $? -eq 0 ]; then
   echo "Process is already running."
 else
   echo "Process is not running. Let's start it!"
-  nohup python3 "$THIS_DIR/src/$MAIN_SCRIPT" "$BOT_TOKEN" > "bot-output $(date).out" 2>&1 &
+  log_file_name="bot-log_$(date +"%m-%d-%Y %T").txt"
+  nohup python3 "$THIS_DIR/src/$MAIN_SCRIPT" "$BOT_TOKEN" > "$log_file_name" 2>&1 &
+  echo "process writes out to $log_file_name"
 fi

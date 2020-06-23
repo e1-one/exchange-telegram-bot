@@ -9,12 +9,13 @@
 
 # script expects BOT_TOKEN as env variable.
 
+MAIN_SCRIPT="start_bot_script.py"
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-ps -aux | grep -v grep | grep start_bot_service.py
+ps -aux | grep -v grep | grep $MAIN_SCRIPT
 if [ $? -eq 0 ]; then
   echo "Process is already running."
 else
   echo "Process is not running. Let's start it!"
-  nohup python3 "$THIS_DIR/src/start_bot_service.py" "$BOT_TOKEN" > bot-nohup.out &
+  nohup python3 "$THIS_DIR/src/$MAIN_SCRIPT" > "bot-output $(date).out" &
 fi

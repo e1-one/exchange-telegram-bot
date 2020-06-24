@@ -4,7 +4,7 @@ from datetime import timedelta, date
 from telegram import ReplyKeyboardMarkup, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from helper.formatted_output import get_html_table_formatted
+from helper.formatted_output import get_html_table_formatted, get_html_table_formatted_nbu
 from helper.tables_finance_page_parser import get_actual_data, get_data_for_date_from_cache
 from model.currency_type import CurrencyType
 from model.page_data_object import PageDataObject
@@ -14,11 +14,14 @@ from teleg.bot_constants import BotButton
 index_message = '''
 Курс валют в обмінниках України 🇺🇦
 
-Як користуватися: Натисніть кнопку на випадаючій клавіатурі, щоб отримати звіт.
-Якщо у вас таблиця відображається некоректено - поміняйте орієнтацію екрана з портретної на альбомну (переверніть смарфон)
+Як користуватися ботом?: 
+Просто натисніть на кнопку телеграм-клавіатури, щоб отримати інфррмацію, а саме: середнє значення курсу \
+купівлі/продажу валюти в обмінниках або банках України за вибраний період.
+
 /help - ❓ допомога 
 /more - ℹ більше інформації 
 '''
+
 help_message = '''
 Позначення:
 ┣ 🏪 - символ обмінника
@@ -30,17 +33,23 @@ help_message = '''
   ┣   '▏ ' - мінімум для заданого періоду
   ┗   '▉' - максимум для періоду
 '''
+
 link = '''
-https://bank.gov.ua/markets
-https://tables.finance.ua/ua/currency/cash/-/ua,0,7oiylpmiow8iy1smadi/usd/2#3:0
+[Сайт НБУ](https://bank.gov.ua/markets) національного банку україн - тут багато інфографіків,\
+ новин та актуальний курс валют по НБУ.
+[Finance.ua](https://tables.finance.ua/ua/currency/cash/-/ua,0,7oiylpmiow8iy1smadi/usd/2#3:0)\
+ - курс валют в обмінниках, новини, форум.
 '''
 
 custom_keyboard = [
-    [BotButton.B12.value, BotButton.B13.value, BotButton.B14.value],
-    [BotButton.B22.value, BotButton.B23.value, BotButton.B24.value],
+    [BotButton.B12.value, BotButton.B14.value],
+    [BotButton.B22.value, BotButton.B24.value],
 
-    [BotButton.B32.value, BotButton.B33.value, BotButton.B34.value],
-    [BotButton.B42.value, BotButton.B43.value, BotButton.B44.value],
+    [BotButton.B32.value, BotButton.B34.value],
+    [BotButton.B42.value, BotButton.B44.value],
+
+    [BotButton.B51.value],
+
     [BotButton.B91.value, BotButton.B92.value],
 ]
 reply_keyboard_markup = ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False, selective=True)
@@ -48,8 +57,23 @@ reply_keyboard_markup = ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=F
 
 def start(update, context):
     logging.info(
-        f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name} called /start command")
+        f"Showing /start output to {update.message.chat_id} chat. Name: {update.message.chat.first_name} \
+        LastName: {update.message.chat.last_name}")
     context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN, text=index_message,
+                             reply_markup=reply_keyboard_markup)
+
+
+def default(update, context):
+    logging.info(f"Unexpected user text input.  Update.message: {update.message}")
+    start(update, context)
+
+
+
+def error(update, context):
+    logging.info(
+        f" Error happened. Update: {update}")
+    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.MARKDOWN,
+                             text="Server error. Please notify bot owner.",
                              reply_markup=reply_keyboard_markup)
 
 
@@ -64,81 +88,83 @@ def show_link(update, context):
 
 
 def get_usd_exch_actual(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.USD, 0)
+    send_message_to_user_based_on_input(update, context, SourceType.EXCHANGER, CurrencyType.USD, 0)
 
 
 def get_usd_exch_for_last_week(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.USD, 7)
-
-
-def get_usd_exch_for_last_2_weeks(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.USD, 14)
+    send_message_to_user_based_on_input(update, context, SourceType.EXCHANGER, CurrencyType.USD, 7)
 
 
 def get_usd_exch_for_last_month(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.USD, 30)
+    send_message_to_user_based_on_input(update, context, SourceType.EXCHANGER, CurrencyType.USD, 30)
 
 
 def get_eur_exch_actual(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 0)
+    send_message_to_user_based_on_input(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 0)
 
 
 def get_eur_exch_for_last_week(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 7)
-
-
-def get_eur_exch_for_last_2_weeks(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 14)
+    send_message_to_user_based_on_input(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 7)
 
 
 def get_eur_exch_for_last_month(update, context):
-    get_currency_for_period(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 30)
+    send_message_to_user_based_on_input(update, context, SourceType.EXCHANGER, CurrencyType.Euro, 30)
 
 
 def get_usd_bank_actual(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.USD, 0)
+    send_message_to_user_based_on_input(update, context, SourceType.BANK, CurrencyType.USD, 0)
 
 
 def get_usd_bank_for_last_week(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.USD, 7)
-
-
-def get_usd_bank_for_last_2_weeks(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.USD, 14)
+    send_message_to_user_based_on_input(update, context, SourceType.BANK, CurrencyType.USD, 7)
 
 
 def get_usd_bank_for_last_month(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.USD, 30)
+    send_message_to_user_based_on_input(update, context, SourceType.BANK, CurrencyType.USD, 30)
 
 
 def get_eur_bank_actual(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.Euro, 0)
+    send_message_to_user_based_on_input(update, context, SourceType.BANK, CurrencyType.Euro, 0)
 
 
 def get_eur_bank_for_last_week(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.Euro, 7)
-
-
-def get_eur_bank_for_last_2_weeks(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.Euro, 14)
+    send_message_to_user_based_on_input(update, context, SourceType.BANK, CurrencyType.Euro, 7)
 
 
 def get_eur_bank_for_last_month(update, context):
-    get_currency_for_period(update, context, SourceType.BANK, CurrencyType.Euro, 30)
+    send_message_to_user_based_on_input(update, context, SourceType.BANK, CurrencyType.Euro, 30)
 
 
-def get_currency_for_period(update, context, source_type: SourceType, currency: CurrencyType, period: int):
+def send_message_to_user_based_on_input_eur_and_dol(update, context):
+    period = 14
+    source = SourceType.BANK  # pick any source. Both sources contain (bank and exchange) contain NBU values
+    data_dol = get_data_for_period(source, CurrencyType.USD, period)
+    data_eur = get_data_for_period(source, CurrencyType.Euro, period)
+    message = get_html_table_formatted_nbu(period, data_dol, data_eur)
+    send_html_response(update, context, message)
+
+
+def send_message_to_user_based_on_input(update, context, source_type: SourceType, currency: CurrencyType, period: int):
+    data = get_data_for_period(source_type, currency, period)
+    message = get_html_table_formatted(source_type, currency, period, data)
+    send_html_response(update, context, message)
+
+
+def send_html_response(update, context, message):
+    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message,
+                             reply_markup=reply_keyboard_markup)
+    logging.info(
+        f"Sending response to: {update.message.chat_id} chat. Name: {update.message.chat.first_name} \
+        LastName: {update.message.chat.last_name}")
+
+
+def get_data_for_period(source_type: SourceType, currency: CurrencyType, period: int):
     today = date.today()
 
     data = [get_actual_data(source_type, currency)]
     for i in range(1, period):
         data.append(get_data_for_date_from_cache(source_type, currency, today - timedelta(days=i)))
-
-    message = get_html_table_formatted(source_type, currency, period, data)
-    context.bot.send_message(chat_id=update.message.chat_id, parse_mode=ParseMode.HTML, text=message,
-                             reply_markup=reply_keyboard_markup)
-    logging.info(
-        f"{update.message.chat_id} chat. Name: {update.message.chat.first_name} LastName: {update.message.chat.last_name}: received response with {currency}, for period {period}")
+    return data
 
 
 def send_test_output_to_bot(update, context):
@@ -167,20 +193,18 @@ def configure_updater(token_value):
 
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B12.get_value_escaped()), get_usd_exch_for_last_week))
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B13.get_value_escaped()), get_usd_exch_for_last_2_weeks))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B14.get_value_escaped()), get_usd_exch_for_last_month))
 
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B22.get_value_escaped()), get_eur_exch_for_last_week))
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B23.get_value_escaped()), get_eur_exch_for_last_2_weeks))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B24.get_value_escaped()), get_eur_exch_for_last_month))
 
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B32.get_value_escaped()), get_usd_bank_for_last_week))
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B33.get_value_escaped()), get_usd_bank_for_last_2_weeks))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B34.get_value_escaped()), get_usd_bank_for_last_month))
 
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B42.get_value_escaped()), get_eur_bank_for_last_week))
-    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B43.get_value_escaped()), get_eur_bank_for_last_2_weeks))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B44.get_value_escaped()), get_eur_bank_for_last_month))
+
+    dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B51.get_value_escaped()), send_message_to_user_based_on_input_eur_and_dol))
 
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B91.get_value_escaped()), show_help))
     dispatcher.add_handler(MessageHandler(Filters.regex(BotButton.B92.get_value_escaped()), show_link))
@@ -189,5 +213,8 @@ def configure_updater(token_value):
     dispatcher.add_handler(CommandHandler("help", show_help))
     dispatcher.add_handler(CommandHandler("more", show_link))
 
-    logging.debug('Updates polling was configured')
+    dispatcher.add_handler(MessageHandler(Filters.regex(".*"), default))
+    dispatcher.add_error_handler(error)
+
+    logging.debug(' Telegram dispatcher object was configured')
     updater.start_polling()

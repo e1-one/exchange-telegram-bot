@@ -19,7 +19,7 @@ def get_html_table_formatted(source_type: SourceType, currency: CurrencyType, pe
     return f"""
 <pre>Курс {currency.get_symbol()} в {source_type.get_cyrylic_name()}
 за останні {period} днів
---------------------------
+---------------------------
 {get_str_table_2_column(list_el)}</pre>
 """
 
@@ -76,7 +76,7 @@ def get_str_table_2_column(list_el: List[PageDataObject]):
     l1 = "Дата    купів. √   продаж √\n"
     l2 = "-----   ------ -   ------ -\n"
     message = l1 + l2
-    format_pattern = "{0:5s}  {1:6.2f} {2:1s}  {3:6.2f} {4:1s}\n"
+    format_pattern = "{0:5s}  {1:6.2f}  {2:1s}  {3:6.2f}  {4:1s}\n"
 
     for el in list_el:
         message += format_pattern.format(

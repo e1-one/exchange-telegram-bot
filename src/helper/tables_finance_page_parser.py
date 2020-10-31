@@ -20,12 +20,12 @@ def get_data_from_html_page(source_type: SourceType, currency_type: CurrencyType
     avg_rate_value_buy = 0
     nbu_value = 0
     try:
-        avg_rate_value_buy = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[2]/td[1]/*')[0].text
-        avg_rate_value_sell = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[2]/td[2]/*')[0].text
+        avg_rate_value_buy = tree.xpath('/html/body/div[3]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[2]/td[1]/*')[0].text
+        avg_rate_value_sell = tree.xpath('/html/body/div[3]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[2]/td[2]/*')[0].text
     except:
         logging.warning("An exception occurred during avg_rate value parsing")
     try:
-        nbu_value = tree.xpath('/html/body/div[2]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[3]/*')[0].text
+        nbu_value = tree.xpath('/html/body/div[3]/div/div[1]/div/div[2]/div/div[5]/div[1]/table/tr[3]/*')[0].text
     except:
         logging.warning("An exception occurred during nbu value parsing")
 
